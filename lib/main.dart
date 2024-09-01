@@ -1,4 +1,4 @@
-import 'package:chat_app/features/splash/presentation/splash_screen.dart';
+import 'package:chat_app/features/authentication/presentation/screens/login_or_signup.dart';
 import 'package:chat_app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: lightMode,
-      home: const SplashScreen(),
+      home: const LoginOrSignup(),
     );
   }
 }
