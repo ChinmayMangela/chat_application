@@ -1,5 +1,7 @@
+import 'package:chat_app/services/authentication/authentication_service.dart';
+import 'package:chat_app/utils/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:chat_app/features/authentication/presentation/widgets/custom_button.dart';
 import 'package:chat_app/features/authentication/presentation/widgets/custom_textfield.dart';
 
@@ -19,6 +21,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  bool obscurePassword = true;
+  bool obscureConfirmPassword = true;
+  final _authenticationService = AuthenticationService();
 
   @override
   void dispose() {
@@ -28,7 +33,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-  void _signUp() {}
+  void _signUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      Utils.showSnackBar(context, 'Please fill in all fields');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      Utils.showSnackBar(context, 'Passwords do not match');
+      return;
+    }
+
+    try {
+      await _authenticationService.signUpWithEmail(
+       email,
+        password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if(mounted) {
+        Utils.showSnackBar(
+          context,
+          e.message.toString(),
+        );
+      }
+    }
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      obscurePassword = !obscurePassword;
+    });
+  }
+
+  void _toggleConfirmPasswordVisibility() {
+    setState(() {
+      obscureConfirmPassword = !obscureConfirmPassword;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,17 +91,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Platform.isIOS
-                  ? const Icon(Icons.apple)
-                  : const Icon(Icons.android, size: 150),
+              const Icon(Icons.person, size: 150),
               const SizedBox(height: 40),
-              Text(
-                'Create An Account',
-                style: textTheme.headlineSmall!.copyWith(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              _buildHeadingText(textTheme),
               const SizedBox(height: 30),
               _buildEmailField(),
               const SizedBox(height: 12),
@@ -94,11 +131,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+  Widget _buildHeadingText(TextTheme textTheme) {
+    return Text(
+      'Create An Account',
+      style: textTheme.headlineSmall!.copyWith(
+        color: Colors.black,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
   Widget _buildEmailField() {
     return CustomTextField(
       controller: _emailController,
       hintText: 'Email',
-      obSecureText: false,
+      isPasswordField: false,
     );
   }
 
@@ -106,7 +153,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return CustomTextField(
       controller: _passwordController,
       hintText: 'Password',
-      obSecureText: true,
+      obscureText: obscurePassword,
+      isPasswordField: true,
+      togglePasswordVisibility: _togglePasswordVisibility,
     );
   }
 
@@ -114,7 +163,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return CustomTextField(
       controller: _confirmPasswordController,
       hintText: 'Confirm Password',
-      obSecureText: true,
+      obscureText: obscureConfirmPassword,
+      isPasswordField: true,
+      togglePasswordVisibility: _toggleConfirmPasswordVisibility,
     );
   }
 }

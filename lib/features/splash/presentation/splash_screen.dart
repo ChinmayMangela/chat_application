@@ -1,5 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:chat_app/features/authentication/presentation/screens/login_or_signup.dart';
+import 'package:chat_app/features/authentication/presentation/screens/auth_gate.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -16,7 +16,7 @@ class SplashScreen extends StatelessWidget {
         ),
       ),
       splashIconSize: 500,
-      nextScreen: const LoginOrSignup(),
+      nextScreen: const AuthGate(),
       backgroundColor: Theme.of(context).colorScheme.surface,
     );
   }

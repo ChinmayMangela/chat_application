@@ -5,12 +5,16 @@ class CustomTextField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.hintText,
-    required this.obSecureText,
+    required this.isPasswordField,
+    this.togglePasswordVisibility,
+    this.obscureText = false,
   });
 
   final TextEditingController controller;
   final String hintText;
-  final bool obSecureText;
+  final bool isPasswordField;
+  final bool obscureText;
+  final void Function()? togglePasswordVisibility;
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +26,21 @@ class CustomTextField extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
     );
 
-    return TextField(
+    return TextFormField(
       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-        color: Colors.black,
-      ),
+            color: Colors.black,
+          ),
       controller: controller,
-      obscureText: obSecureText,
+      obscureText: obscureText,
       decoration: InputDecoration(
+        suffixIcon: isPasswordField
+            ? IconButton(
+                onPressed: togglePasswordVisibility,
+                icon: Icon(
+                  obscureText ? Icons.visibility_off : Icons.visibility,
+                ),
+              )
+            : null,
         hintText: hintText,
         fillColor: Theme.of(context).colorScheme.tertiary,
         filled: true,

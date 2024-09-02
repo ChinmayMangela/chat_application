@@ -1,6 +1,8 @@
-import 'dart:io';
 import 'package:chat_app/features/authentication/presentation/widgets/custom_button.dart';
 import 'package:chat_app/features/authentication/presentation/widgets/custom_textfield.dart';
+import 'package:chat_app/services/authentication/authentication_service.dart';
+import 'package:chat_app/utils/utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -18,6 +20,8 @@ class LogInScreen extends StatefulWidget {
 class _LogInScreenState extends State<LogInScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool obscurePassword = true;
+  final _authenticationService = AuthenticationService();
 
   @override
   void dispose() {
@@ -26,7 +30,36 @@ class _LogInScreenState extends State<LogInScreen> {
     super.dispose();
   }
 
-  void _logIn() {}
+  void _logIn() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty ||
+        password.isEmpty) {
+      Utils.showSnackBar(
+          context, 'Enter your username or email Address to login');
+      return;
+    }
+    try {
+      await _authenticationService.logInWithEmail(
+        email,
+        password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        Utils.showSnackBar(
+          context,
+          e.message.toString(),
+        );
+      }
+    }
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      obscurePassword = !obscurePassword;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +77,12 @@ class _LogInScreenState extends State<LogInScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Platform.isIOS
-                  ? const Icon(Icons.apple)
-                  : const Icon(Icons.android, size: 150),
-              const SizedBox(height: 40),
-              Text(
-                'Welcome back, You have been missed!!',
-                style: textTheme.bodyLarge!.copyWith(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+              const Icon(
+                Icons.person,
+                size: 150,
               ),
+              const SizedBox(height: 40),
+              _buildHeadingText(textTheme),
               const SizedBox(height: 30),
               _buildEmailField(),
               const SizedBox(height: 12),
@@ -90,11 +118,21 @@ class _LogInScreenState extends State<LogInScreen> {
     );
   }
 
+  Widget _buildHeadingText(TextTheme textTheme) {
+    return Text(
+      'Welcome back, You have been missed!!',
+      style: textTheme.bodyLarge!.copyWith(
+        color: Colors.black,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
   Widget _buildEmailField() {
     return CustomTextField(
       controller: _emailController,
       hintText: 'Email',
-      obSecureText: false,
+      isPasswordField: false,
     );
   }
 
@@ -102,7 +140,9 @@ class _LogInScreenState extends State<LogInScreen> {
     return CustomTextField(
       controller: _passwordController,
       hintText: 'Password',
-      obSecureText: true,
+      isPasswordField: true,
+      obscureText: obscurePassword,
+      togglePasswordVisibility: _togglePasswordVisibility,
     );
   }
 }
