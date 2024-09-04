@@ -1,3 +1,4 @@
+import 'package:chat_app/main.dart';
 import 'package:chat_app/services/authentication/authentication_service.dart';
 import 'package:chat_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,33 +35,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _signUp() async {
+    Utils.showCircularProgressIndicator(context);
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
     final confirmPassword = _confirmPasswordController.text.trim();
 
     if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      Utils.showSnackBar(context, 'Please fill in all fields');
+      Utils.showSnackBar('Please fill in all fields');
       return;
     }
 
     if (password != confirmPassword) {
-      Utils.showSnackBar(context, 'Passwords do not match');
+      Utils.showSnackBar('Passwords do not match');
       return;
     }
 
-    try {
-      await _authenticationService.signUpWithEmail(
-       email,
-        password,
-      );
-    } on FirebaseAuthException catch (e) {
-      if(mounted) {
-        Utils.showSnackBar(
-          context,
-          e.message.toString(),
-        );
-      }
-    }
+    await _authenticationService.signUpWithEmail(
+      email,
+      password,
+    );
+    navigatorKey.currentState?.popUntil((route) => route.isFirst);
   }
 
   void _togglePasswordVisibility() {
@@ -91,7 +85,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.person, size: 150),
+              Icon(
+                Icons.person,
+                size: 150,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
               const SizedBox(height: 40),
               _buildHeadingText(textTheme),
               const SizedBox(height: 30),

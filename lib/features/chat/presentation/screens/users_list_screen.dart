@@ -1,4 +1,4 @@
-import 'package:chat_app/services/authentication/authentication_service.dart';
+import 'package:chat_app/features/authentication/presentation/widgets/drawer/my_drawer.dart';
 import 'package:flutter/material.dart';
 
 class UsersListScreen extends StatelessWidget {
@@ -6,18 +6,10 @@ class UsersListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authenticationService = AuthenticationService();
     return Scaffold(
+      drawer: const MyDrawer(),
       appBar: AppBar(
-        title: const Text('HOME'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              authenticationService.signOut();
-            },
-            icon: const Icon(Icons.logout),
-          ),
-        ],
+        title: const Text('H O M E'),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:chat_app/features/authentication/presentation/widgets/custom_button.dart';
 import 'package:chat_app/features/authentication/presentation/widgets/custom_textfield.dart';
+import 'package:chat_app/main.dart';
 import 'package:chat_app/services/authentication/authentication_service.dart';
 import 'package:chat_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,28 +32,20 @@ class _LogInScreenState extends State<LogInScreen> {
   }
 
   void _logIn() async {
+    Utils.showCircularProgressIndicator(context);
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if (email.isEmpty ||
-        password.isEmpty) {
-      Utils.showSnackBar(
-          context, 'Enter your username or email Address to login');
+    if (email.isEmpty && password.isEmpty) {
+      Utils.showSnackBar('Enter your username or email Address to login');
       return;
     }
-    try {
-      await _authenticationService.logInWithEmail(
-        email,
-        password,
-      );
-    } on FirebaseAuthException catch (e) {
-      if (mounted) {
-        Utils.showSnackBar(
-          context,
-          e.message.toString(),
-        );
-      }
-    }
+
+    await _authenticationService.logInWithEmail(
+      email,
+      password,
+    );
+    navigatorKey.currentState?.popUntil((route) => route.isFirst);
   }
 
   void _togglePasswordVisibility() {
@@ -77,8 +70,9 @@ class _LogInScreenState extends State<LogInScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.person,
+                color: Theme.of(context).colorScheme.secondary,
                 size: 150,
               ),
               const SizedBox(height: 40),
