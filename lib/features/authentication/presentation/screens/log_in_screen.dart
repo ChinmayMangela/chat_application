@@ -3,7 +3,6 @@ import 'package:chat_app/features/authentication/presentation/widgets/custom_tex
 import 'package:chat_app/main.dart';
 import 'package:chat_app/services/authentication/authentication_service.dart';
 import 'package:chat_app/utils/utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LogInScreen extends StatefulWidget {
@@ -32,15 +31,15 @@ class _LogInScreenState extends State<LogInScreen> {
   }
 
   void _logIn() async {
-    Utils.showCircularProgressIndicator(context);
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if (email.isEmpty && password.isEmpty) {
-      Utils.showSnackBar('Enter your username or email Address to login');
+    if (email.isEmpty || password.isEmpty) {
+      Utils.showSnackBar('Enter your credentials');
       return;
     }
 
+    Utils.showCircularProgressIndicator(context);
     await _authenticationService.logInWithEmail(
       email,
       password,
@@ -62,6 +61,7 @@ class _LogInScreenState extends State<LogInScreen> {
   }
 
   Widget _buildBody() {
+    final screenHeight = Utils.getScreenHeight(context);
     final textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -75,13 +75,15 @@ class _LogInScreenState extends State<LogInScreen> {
                 color: Theme.of(context).colorScheme.secondary,
                 size: 150,
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: screenHeight * 0.05),
               _buildHeadingText(textTheme),
-              const SizedBox(height: 30),
+              SizedBox(height: screenHeight * 0.04),
               _buildEmailField(),
-              const SizedBox(height: 12),
+              SizedBox(height: screenHeight * 0.014),
               _buildPasswordField(),
-              const SizedBox(height: 18),
+              SizedBox(height: screenHeight * 0.0001),
+              _buildForgotPasswordButton(),
+              SizedBox(height: screenHeight * 0.01),
               CustomButton(onTap: _logIn, label: 'Log In'),
               const SizedBox(height: 12),
               Row(
@@ -127,6 +129,7 @@ class _LogInScreenState extends State<LogInScreen> {
       controller: _emailController,
       hintText: 'Email',
       isPasswordField: false,
+      autoFillHints: const [AutofillHints.email],
     );
   }
 
@@ -137,6 +140,21 @@ class _LogInScreenState extends State<LogInScreen> {
       isPasswordField: true,
       obscureText: obscurePassword,
       togglePasswordVisibility: _togglePasswordVisibility,
+      autoFillHints: const [AutofillHints.password],
+    );
+  }
+
+  Widget _buildForgotPasswordButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          onPressed: () {},
+          child: Text('Forgot Password', style: Theme.of(context).textTheme.labelLarge!.copyWith(
+            color: Theme.of(context).colorScheme.secondary,
+          ),),
+        ),
+      ],
     );
   }
 }

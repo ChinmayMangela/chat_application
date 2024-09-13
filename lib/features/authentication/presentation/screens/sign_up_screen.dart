@@ -1,7 +1,6 @@
 import 'package:chat_app/main.dart';
 import 'package:chat_app/services/authentication/authentication_service.dart';
 import 'package:chat_app/utils/utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/features/authentication/presentation/widgets/custom_button.dart';
 import 'package:chat_app/features/authentication/presentation/widgets/custom_textfield.dart';
@@ -35,13 +34,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _signUp() async {
-    Utils.showCircularProgressIndicator(context);
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
     final confirmPassword = _confirmPasswordController.text.trim();
 
     if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      Utils.showSnackBar('Please fill in all fields');
+      Utils.showSnackBar('Enter your credentials');
       return;
     }
 
@@ -50,6 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
+    Utils.showCircularProgressIndicator(context);
     await _authenticationService.signUpWithEmail(
       email,
       password,
@@ -77,6 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget _buildBody() {
+    final screenHeight = Utils.getScreenHeight(context);
     final textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -90,17 +90,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 size: 150,
                 color: Theme.of(context).colorScheme.secondary,
               ),
-              const SizedBox(height: 40),
+               SizedBox(height: screenHeight * 0.05),
               _buildHeadingText(textTheme),
-              const SizedBox(height: 30),
+               SizedBox(height: screenHeight * 0.04),
               _buildEmailField(),
-              const SizedBox(height: 12),
+               SizedBox(height: screenHeight * 0.014),
               _buildPasswordField(),
-              const SizedBox(height: 12),
+               SizedBox(height: screenHeight * 0.014),
               _buildConfirmPasswordField(),
-              const SizedBox(height: 18),
+               SizedBox(height: screenHeight * 0.03),
               CustomButton(onTap: _signUp, label: 'Sign Up'),
-              const SizedBox(height: 12),
+               SizedBox(height: screenHeight * 0.012),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -144,6 +144,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       controller: _emailController,
       hintText: 'Email',
       isPasswordField: false,
+      autoFillHints: const [AutofillHints.email],
     );
   }
 
@@ -154,6 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       obscureText: obscurePassword,
       isPasswordField: true,
       togglePasswordVisibility: _togglePasswordVisibility,
+      autoFillHints: const [AutofillHints.password],
     );
   }
 
@@ -164,6 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       obscureText: obscureConfirmPassword,
       isPasswordField: true,
       togglePasswordVisibility: _toggleConfirmPasswordVisibility,
+      autoFillHints: const [AutofillHints.password],
     );
   }
 }

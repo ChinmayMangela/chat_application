@@ -1,5 +1,5 @@
 import 'package:chat_app/features/authentication/presentation/screens/login_or_signup.dart';
-import 'package:chat_app/features/chat/presentation/screens/users_list_screen.dart';
+import 'package:chat_app/features/authentication/presentation/screens/verification_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class AuthGate extends StatelessWidget {
           );
         }
         if (snapshot.hasData) {
-          return const UsersListScreen();
+          return const EmailVerificationScreen();
         } else {
           return const LoginOrSignup();
         }

@@ -12,3 +12,11 @@ ThemeData lightMode = ThemeData(
     tertiary: Colors.white,
   ),
 );
+
+ThemeData darkMode = ThemeData(
+  scaffoldBackgroundColor: Colors.black,
+  textTheme: GoogleFonts.latoTextTheme(),
+  colorScheme: ColorScheme.dark(
+
+  ),
+);

@@ -8,6 +8,7 @@ class CustomTextField extends StatelessWidget {
     required this.isPasswordField,
     this.togglePasswordVisibility,
     this.obscureText = false,
+    required this.autoFillHints,
   });
 
   final TextEditingController controller;
@@ -15,6 +16,7 @@ class CustomTextField extends StatelessWidget {
   final bool isPasswordField;
   final bool obscureText;
   final void Function()? togglePasswordVisibility;
+  final Iterable<String> autoFillHints;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class CustomTextField extends StatelessWidget {
     );
 
     return TextFormField(
+      autofillHints: autoFillHints,
       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
             color: Colors.black,
           ),
