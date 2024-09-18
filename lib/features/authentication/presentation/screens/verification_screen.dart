@@ -9,7 +9,8 @@ class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
 
   @override
-  State<EmailVerificationScreen> createState() => _EmailVerificationScreenState();
+  State<EmailVerificationScreen> createState() =>
+      _EmailVerificationScreenState();
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
@@ -54,40 +55,42 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     return isEmailVerified
         ? const UsersListScreen()
         : Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-                'A verification email has been sent to your account'),
-            const SizedBox(height: 20),
-            _buildResendButton(),
-            const SizedBox(height: 10),
-            _buildCancelButton(),
-          ],
-        ),
-      ),
-    );
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'A verification email has been sent to your account',
+                  ),
+                  const SizedBox(height: 20),
+                  _buildResendButton(),
+                  const SizedBox(height: 10),
+                  _buildCancelButton(),
+                ],
+              ),
+            ),
+          );
   }
 
   Widget _buildResendButton() {
-    return _buildButton(onTap: () {
-      _authenticationService.sendVerificationEmail();
-    },
+    return _buildButton(
+        onTap: () {
+          _authenticationService.sendVerificationEmail();
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.email, color: Theme.of(context).colorScheme.primary),
             const SizedBox(width: 10),
-            Text('Resend Email', style: Theme.of(context).textTheme.labelLarge!.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.bold,
-
-            ),
+            Text(
+              'Resend Email',
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ],
-        )
-    );
+        ));
   }
 
   Widget _buildCancelButton() {
@@ -96,10 +99,13 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         await _authenticationService.signOut();
       },
       child: Center(
-        child: Text('Cancel', style: Theme.of(context).textTheme.labelLarge!.copyWith(
-          color: Theme.of(context).colorScheme.primary,
-          fontWeight: FontWeight.bold,
-        ),),
+        child: Text(
+          'Cancel',
+          style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
+        ),
       ),
     );
   }
@@ -111,7 +117,6 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(10),
-
         ),
         width: Utils.getScreenWidth(context) * 0.9,
         height: Utils.getScreenHeight(context) * 0.06,

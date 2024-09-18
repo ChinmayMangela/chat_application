@@ -42,15 +42,24 @@ class AuthenticationService {
     await _auth.signOut();
   }
 
-
   Future<void> sendVerificationEmail() async {
     Utils.showSnackBar('Email verification has been sent');
     try {
       final user = _auth.currentUser;
       await user!.sendEmailVerification();
-    } catch(e) {
+    } catch (e) {
       Utils.showSnackBar(e.toString());
     }
   }
 
+  Future<void> resetPassword(String email) async {
+    Utils.showSnackBar('Password reset email sent');
+    try {
+      await _auth.sendPasswordResetEmail(
+        email: email,
+      );
+    } catch (e) {
+      Utils.showSnackBar(e.toString());
+    }
+  }
 }

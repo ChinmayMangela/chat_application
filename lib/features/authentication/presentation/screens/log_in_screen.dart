@@ -1,3 +1,4 @@
+import 'package:chat_app/features/authentication/presentation/screens/reset_password_page.dart';
 import 'package:chat_app/features/authentication/presentation/widgets/custom_button.dart';
 import 'package:chat_app/features/authentication/presentation/widgets/custom_textfield.dart';
 import 'package:chat_app/main.dart';
@@ -149,10 +150,19 @@ class _LogInScreenState extends State<LogInScreen> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          onPressed: () {},
-          child: Text('Forgot Password', style: Theme.of(context).textTheme.labelLarge!.copyWith(
-            color: Theme.of(context).colorScheme.secondary,
-          ),),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const ResetPasswordPage(),
+              ),
+            );
+          },
+          child: Text(
+            'Forgot Password',
+            style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+          ),
         ),
       ],
     );
