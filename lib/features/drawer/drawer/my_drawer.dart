@@ -1,4 +1,5 @@
-import 'package:chat_app/features/authentication/presentation/widgets/drawer/drawer_tile.dart';
+import 'package:chat_app/features/drawer/drawer/drawer_tile.dart';
+import 'package:chat_app/features/settings/presentation/pages/settings_page.dart';
 import 'package:chat_app/main.dart';
 import 'package:chat_app/services/authentication/authentication_service.dart';
 import 'package:chat_app/utils/utils.dart';
@@ -27,12 +28,17 @@ class MyDrawer extends StatelessWidget {
               DrawerTile(
                 icon: Icons.home,
                 label: 'H O M E',
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
               ),
               DrawerTile(
                 icon: Icons.settings,
                 label: 'S E T T I N G S',
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SettingsPage()));
+                },
               ),
             ],
           ),

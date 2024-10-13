@@ -27,7 +27,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     if (!isEmailVerified) {
       _authenticationService.sendVerificationEmail();
 
-      Timer.periodic(const Duration(seconds: 3), (_) {
+      timer = Timer.periodic(const Duration(seconds: 3), (_) {
         return checkEmailVerified();
       });
     }
@@ -47,7 +47,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   @override
   void dispose() {
     super.dispose();
-    timer!.cancel();
+    timer?.cancel();
   }
 
   @override

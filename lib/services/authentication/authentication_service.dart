@@ -1,8 +1,11 @@
+import 'package:chat_app/features/authentication/models/end_user.dart';
+import 'package:chat_app/services/users_service.dart';
 import 'package:chat_app/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final UsersService _usersService = UsersService();
 
   // Sign In user with their email and password
   Future<UserCredential?> logInWithEmail(String email, String password) async {
@@ -27,10 +30,13 @@ class AuthenticationService {
   // Registers new user with their email and password
   Future<UserCredential?> signUpWithEmail(String email, String password) async {
     try {
-      return await _auth.createUserWithEmailAndPassword(
+      UserCredential user =  await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      final newUser = EndUser(email: email, id: FirebaseAuth.instance.currentUser!.uid);
+      await _usersService.addUserToDB(newUser, FirebaseAuth.instance.currentUser!.uid);
+      return user;
     } on FirebaseAuthException catch (e) {
       Utils.showSnackBar(e.message);
     }
