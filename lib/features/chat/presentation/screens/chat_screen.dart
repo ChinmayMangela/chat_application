@@ -22,8 +22,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _sendMessage() async {
     final message = _messageController.text;
-    if(message.isNotEmpty) {
-      await _chatService.senMessage(widget.user.id, message);
+    if (message.isNotEmpty) {
+      await _chatService.senMessage(
+          receiverId: widget.user.id, message: _messageController.text);
       _messageController.clear();
     }
   }
@@ -51,16 +52,21 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildBody() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
+      child: Stack(
         children: [
           _buildChats(),
-          const Spacer(),
-          Row(
-            children: [
-              Expanded(child: CustomTextField(controller: _messageController)),
-              const SizedBox(width: 10),
-              SendMessageButton(onTap: _sendMessage),
-            ],
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Row(
+              children: [
+                Expanded(
+                    child: CustomTextField(controller: _messageController)),
+                const SizedBox(width: 10),
+                SendMessageButton(onTap: _sendMessage),
+              ],
+            ),
           ),
         ],
       ),
@@ -68,26 +74,24 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildChats() {
-    return Expanded(
-      child: StreamBuilder<List<Message>>(
-        stream: _chatService.fetchMessages(
-            FirebaseAuth.instance.currentUser!.uid, widget.user.id),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return _buildCircularProgressIndicator();
-          }
-      
-          if (snapshot.data!.isEmpty || snapshot.data == null) {
-            return _showMessage('You haven\'t started conversation yet');
-          }
-          if (snapshot.hasError) {
-            return _showMessage(snapshot.error.toString());
-          } else {
-            final messages = snapshot.data;
-            return ChatsList(messages: messages!);
-          }
-        },
-      ),
+    return StreamBuilder<List<Message>>(
+      stream: _chatService.fetchMessages(
+          FirebaseAuth.instance.currentUser!.uid, widget.user.id),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildCircularProgressIndicator();
+        }
+
+        if (snapshot.data!.isEmpty || snapshot.data == null) {
+          return _showMessage('You haven\'t started conversation yet');
+        }
+        if (snapshot.hasData) {
+          final messages = snapshot.data;
+          return ChatsList(messages: messages!);
+        } else {
+          return _showMessage(snapshot.error.toString());
+        }
+      },
     );
   }
 

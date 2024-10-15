@@ -7,7 +7,7 @@ class ChatService {
   final FirebaseFirestore _firebaseFireStore = FirebaseFirestore.instance;
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<void> senMessage(String receiverId, String message) async {
+  Future<void> senMessage({required String receiverId, required String message}) async {
     //get current user info
     final currentUser = _firebaseAuth.currentUser;
     final currentUserId = currentUser!.uid;
@@ -24,12 +24,13 @@ class ChatService {
     // create chat room id by combining both (receiver, sender) ids
     final List<String> ids = [currentUserId, receiverId];
 
+    ids.sort();
     // create chat room id by combining both of them via underscore
     final chatRoomId = ids.join('_');
 
     // create chat room collection inside firebase and also add messages
     await _firebaseFireStore
-        .collection('chatRooms')
+        .collection('chat_rooms')
         .doc(chatRoomId)
         .collection('messages')
         .add(
@@ -40,15 +41,18 @@ class ChatService {
   Stream<List<Message>> fetchMessages(
       String currentUserId, String otherUserId) {
     final List<String> ids = [currentUserId, otherUserId];
+    ids.sort();
     final chatRoomId = ids.join('_');
     return _firebaseFireStore
-        .collection('chatRooms')
+        .collection('chat_rooms')
         .doc(chatRoomId)
         .collection('messages')
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((message) {
-        return Message.fromJson(message.data());
+        return Message.fromJson(
+          message.data(),
+        );
       }).toList();
     });
   }

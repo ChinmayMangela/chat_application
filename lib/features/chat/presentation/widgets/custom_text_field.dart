@@ -16,6 +16,8 @@ class CustomTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
+        fillColor: Colors.white,
+        filled: true,
         border: border,
         enabledBorder: border,
         focusedBorder: border,

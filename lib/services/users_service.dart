@@ -7,7 +7,7 @@ class UsersService {
   final FirebaseFirestore _firebaseFireStore = FirebaseFirestore.instance;
   final String currentUserId;
 
-  UsersService(): currentUserId = FirebaseAuth.instance.currentUser!.uid;
+  UsersService(): currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
 
 
   Future<void> addUserToDB(EndUser user, String docId) async {
